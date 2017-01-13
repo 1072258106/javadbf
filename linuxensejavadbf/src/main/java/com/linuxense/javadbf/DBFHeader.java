@@ -91,9 +91,24 @@ public class DBFHeader {
 		List<DBFField> v_fields = new ArrayList<>();
 		
 		DBFField field = null; /* 32 each */
+
+		//<editor-fold desc="这是我加的代码,按字段个数来读取">
+		int fieldCount = (headerLength - 33) / 32;
+		for (int i = 0; i < fieldCount; i++) {
+			field = DBFField.createField(dataInput,charset);
+			v_fields.add(field);
+		}
+		byte t_byte = dataInput.readByte();//在读取一位看看
+		if (t_byte != (byte) 0x0d) {
+			System.out.println("头结束符期望是13，但实际是：" + t_byte);
+		}
+		//</editor-fold>
+
+		/* 这是以前的代码
 		while ((field = DBFField.createField(dataInput,charset))!= null) {
 			v_fields.add(field);
-		}		
+		}
+		*/
 		this.fieldArray = v_fields.toArray(new DBFField[v_fields.size()]);		
 	}
 

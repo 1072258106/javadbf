@@ -82,6 +82,7 @@ public class DBFReader extends DBFBase {
 
 	private DataInputStream dataInputStream;
 	private DBFHeader header;
+	private int curDataRow = 0; //当前数据第几行
 
 	private static final long MILLISECS_PER_DAY = 24*60*60*1000;
 	private static final long MILLIS_SINCE_4713 = -210866803200000L;
@@ -191,9 +192,10 @@ public class DBFReader extends DBFBase {
 			do {
 				if (isDeleted) {
 					skip(this.header.recordLength - 1);
+					this.curDataRow++;
 				}
 				int t_byte = this.dataInputStream.readByte();
-				if (t_byte == END_OF_DATA) {
+				if (t_byte == END_OF_DATA && curDataRow >= getRecordCount()) {
 					return null;
 				}
 				isDeleted = t_byte == '*';
@@ -294,6 +296,7 @@ public class DBFReader extends DBFBase {
 					recordObjects[i] = "null";
 				}
 			}
+			this.curDataRow++;
 		} catch (EOFException e) {
 			return null;
 		} catch (IOException e) {
