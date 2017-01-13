@@ -129,8 +129,10 @@ public abstract class DbfReader implements Reader {
     private void skipHeaderTerminator(String fname) throws IOException {
         ByteBuffer byteBuffer = ByteBuffer.allocate(1);
         readByteBuffer(byteBuffer);
+        /* 这个注释掉, 因为我们的dbf不是标准的dbf格式, 这里的校验太严格了*/
         if (byteBuffer.array()[0] != HEADER_END_CHAR) {
-            throw new IOException("头结束符期望是13，但实际是：" + byteBuffer.array()[0]);
+            //throw new IOException("头结束符期望是13，但实际是：" + byteBuffer.array()[0]);
+            System.out.println("文件:" + fname + ", 头结束符期望是13，但实际是：" + byteBuffer.array()[0]);
         }
     }
 
